@@ -50,8 +50,19 @@ Question: Count the number of movies with 3 comments or more.
 Answer:
 
 ```python
+
 comments = db.comments
 pipeline = [
+    {
+        "$match": {
+            "$expr": {
+                "$and": [
+                    { "$ne": ["$movie_id", None] },
+                    { "$in": ["$movie_id", movies.distinct("_id")] }
+                ]
+            }
+        }
+    },
     {
         "$group": {
             "_id": "$movie_id",
